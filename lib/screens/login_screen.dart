@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'package:app/Models/token.dart';
+import 'package:app/components/loader_component.dart';
+import 'package:app/helpers/constans.dart';
+import 'package:app/screens/home_screen.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,14 +15,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-   String _email ='';
+   String _email ='sandra@yopmail.com';
    String _emailError ='';
    bool _emailShowError = false;
    String _password ='';
-   String _passwordError ='';
+   String _passwordError ='123456';
    bool _passwordShowError = false;
    bool _remenberme = true;
    bool _passwordshow = false;
+   bool _showLoader = false;
    
   
   @override
@@ -37,8 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 _showButtons(),
               ],
             ),
+            
           ),
-         
+          _showLoader ? LoaderComponent(text: 'Por favor espere...') : Container(),
         ],
       ),
     );
@@ -136,7 +144,7 @@ Widget _showButtons() {
               }
           ),
           ),
-          onPressed: () => _login()
+          onPressed: () => _login(),
             
           ),
         ),
@@ -159,21 +167,64 @@ Widget _showButtons() {
   );
 }
 
-  void _login() {
-    if (!_validateFields()){
+  void _login() async {
+    setState(() {
+      _passwordshow = false;
+    });
+
+    if(!_validateFields()) {
       return;
     }
+  setState(() {
+      _showLoader = true;
+    });
+   
+    Map<String, dynamic> request = {
+      'userName': _email,
+      'password': _password,
+    };
+var url = Uri.parse('${Constans.apiUrl}/api/Account/CreateToken');
+    var response = await http.post(
+      url,
+      headers: {
+        'content-type' : 'application/json',
+        'accept' : 'application/json',
+      },
+      body: jsonEncode(request),
+    );
+
+      setState(() {
+      _showLoader = false;
+    });
+
+if(response.statusCode >= 400){
+  setState(() {
+    _passwordShowError = true;
+    _passwordError = "Email o password incorectos";
+  });
+  return;
+}
+  var body = response.body;
+  var decodeJson = jsonDecode(body);
+  var token = Token.fromJson(decodeJson);
+  Navigator.pushReplacement(
+    context, 
+    MaterialPageRoute(
+      builder: (context) => HomeScreen(token: token,)
+      ),
+    );
   }
 
+
   bool _validateFields() {
-    bool hasErrors = false;
+    bool isValid = true;
 
     if (_email.isEmpty) {
-      hasErrors  = false;
+      isValid  = false;
       _emailShowError = true;
       _emailError = 'Debes ingresar tu email.';
     } else if (!EmailValidator.validate(_email)) {
-      hasErrors  = true;
+      isValid  = false;
       _emailShowError = true;
       _emailError = 'Debes ingresar un email válido.';
     } else {
@@ -181,11 +232,11 @@ Widget _showButtons() {
     }
 
   if (_password.isEmpty) {
-      hasErrors  = true;
+      isValid  = false;
       _passwordShowError = true;
       _passwordError = 'Debes ingresar tu password.';
     } else if (_password.length < 6) {
-      hasErrors  = true;
+      isValid  = false;
       _passwordShowError = true;
       _passwordError = 'Debes ingresar un passwprd minimo de 6 carácteres.';
     } else {
@@ -194,6 +245,6 @@ Widget _showButtons() {
 
 
     setState(() { });
-    return hasErrors;
+    return isValid;
   }
 }
