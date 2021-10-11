@@ -6,6 +6,7 @@ import 'package:app/components/loader_component.dart';
 import 'package:app/helpers/constans.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class ProceduresScreen extends StatefulWidget {
 
@@ -34,8 +35,12 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
         title: Text('Procedimientos'),
       ),
       body: Center(
-        child: Text('Procedimientos'),
+        child: _showLoader ? LoaderComponent(text: 'Por favor espere...') : _getContent(),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: (){ },
+        ),
     );
   }
 
@@ -66,5 +71,71 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
    }
   }
    print(_procedure);
+  }
+
+Widget _getContent() {
+  return _procedure.length == 0
+  ? _noContent()
+  : _getListView();
+  }
+
+  Widget _noContent() {
+    return Container(
+      margin: EdgeInsets.all(20) ,
+      child: Center(
+  child:  Text(
+    'No hay procedimientos almacenados',
+  style: TextStyle(
+    fontSize: 16,
+    fontWeight:  FontWeight.bold
+      ),  
+      ),
+    ),
+  );
+}
+
+  Widget _getListView() {
+    return ListView(
+      children: _procedure.map((e){
+        return Card(
+
+          child: InkWell(
+            onTap: () {},
+            child: Container(
+              margin:  EdgeInsets.all(10),
+              padding: EdgeInsets.all(5),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        e.description, 
+                        style: TextStyle(
+                          fontSize: 16,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios),
+                    ],
+                  ),
+                  SizedBox(height: 5,),
+                     Row(
+                       children: [
+                         Text(
+                    '${NumberFormat.currency(symbol : '\$').format(e.price)}', 
+                    style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                       ],
+                     ),
+                ],
+              ),
+            ),
+          ),
+        );
+        
+      }).toList(),
+    ); 
   }
 }
