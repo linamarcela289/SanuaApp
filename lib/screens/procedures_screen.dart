@@ -4,6 +4,7 @@ import 'package:app/Models/Procedure.dart';
 import 'package:app/Models/token.dart';
 import 'package:app/components/loader_component.dart';
 import 'package:app/helpers/constans.dart';
+import 'package:app/screens/procedures_screen_add_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -39,7 +40,16 @@ class _ProceduresScreenState extends State<ProceduresScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: (){ },
+        onPressed: (){
+          Navigator.push(
+          context, 
+    MaterialPageRoute(
+      builder: (context) => procedures_screen_add_edit(
+        token: widget.token,
+        procedure: Procedure(description: "", id: 0, price: 0),)
+      ),
+    );
+         },
         ),
     );
   }
@@ -98,9 +108,17 @@ Widget _getContent() {
     return ListView(
       children: _procedure.map((e){
         return Card(
-
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+            Navigator.push(
+          context, 
+    MaterialPageRoute(
+      builder: (context) => procedures_screen_add_edit(
+        token: widget.token,
+        procedure: Procedure(description: "", id: 0, price: 0),)
+      ),
+    );
+            },
             child: Container(
               margin:  EdgeInsets.all(10),
               padding: EdgeInsets.all(5),
