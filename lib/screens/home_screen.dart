@@ -1,6 +1,5 @@
 import 'package:app/Models/token.dart';
 import 'package:app/screens/login_screen.dart';
-import 'package:app/screens/procedures_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,7 +33,7 @@ Widget _getBody() {
         ClipRRect(
          borderRadius: BorderRadius.circular(150),
          child:  FadeInImage(
-          placeholder: AssetImage('assets/carro.jpg'), 
+          placeholder: AssetImage('assets/logo.jpg'), 
           image: NetworkImage(widget.token.user.imageFullPath),
           height: 300,
           fit: BoxFit.cover,
@@ -61,7 +60,7 @@ Widget _getBody() {
         children: <Widget>[
           DrawerHeader(
             child: Image(
-              image: AssetImage('assets/carro.jpg'),
+              image: AssetImage('assets/logo.jpg'),
             ),
             ),
             ListTile(
@@ -69,18 +68,7 @@ Widget _getBody() {
               title: Text("Marcas"),
               onTap: () {},
             ),
-              ListTile(
-              leading: Icon(Icons.two_wheeler),
-              title: Text("Procedimientos"),
-              onTap: () {
-                 Navigator.push(
-                  context, 
-                  MaterialPageRoute(
-                  builder: (context) => ProceduresScreen (token: widget.token,)
-      ),
-    );
-  },
-),
+              
               ListTile(
               leading: Icon(Icons.two_wheeler),
               title: Text("Tipos de Documento"),
@@ -129,7 +117,7 @@ Widget _getBody() {
         children: <Widget>[
           DrawerHeader(
             child: Image(
-              image: AssetImage('assets/carro.jpg'),
+              image: AssetImage('assets/logo.jpg'),
             ),
             ),
             ListTile(

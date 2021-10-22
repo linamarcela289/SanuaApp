@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
    Widget _showLogo() {
     return Image(
-      image: AssetImage('assets/carro.jpg'),
+      image: AssetImage('assets/logo.jpg'),
       width: 300,
       fit: BoxFit.fill,
     );
